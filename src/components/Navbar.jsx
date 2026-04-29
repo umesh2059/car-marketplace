@@ -10,7 +10,7 @@ function Navbar() {
           className="flex items-center gap-2 text-2xl font-bold text-blue-600"
         >
           <FaCarSide className="text-3xl" />
-          AutoMarket
+          CarDekho
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
