@@ -4,6 +4,8 @@ import Cars from './pages/Cars';
 import CarDetails from './pages/CarDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import AddCar from './pages/AddCar';
 function App(){
   return (
     <Routes>
@@ -12,6 +14,9 @@ function App(){
       <Route path='/cars/:id' element={<CarDetails/>}/>
       <Route path='/Login'element={<Login/>}/>
       <Route path='/Register'element={<Register/>}/>
+      <Route path='/Dashboard'element={<Dashboard/>}/>
+      <Route path='/AddCar'element={<AddCar/>}/>
+      
     </Routes>
   );
 }
