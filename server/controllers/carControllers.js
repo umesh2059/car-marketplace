@@ -1,5 +1,6 @@
 import Car from "../models/car.js";
 
+//create a new car
 export const createCar = async(req,res)=>{
     try{
         const car = await Car.create(req.body);
@@ -18,3 +19,21 @@ export const createCar = async(req,res)=>{
         });
     }
 };
+
+//get all cars
+export const getCars = async(req,res)=>{
+    try{
+        const cars = await Car.find().sort({createdAt: -1})
+
+        res.status(200).json({
+            sucess:true,
+            count:cars.length,
+            data:cars
+        });
+    }catch(error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
