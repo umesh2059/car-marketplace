@@ -72,7 +72,7 @@ export const updateCar = async(req,res)=>{
             }
         );
        if(!car){
-        return res.status(404)({
+        return res.status(404).json({
             success:false,
             message:'car not found'
         })
@@ -89,4 +89,27 @@ export const updateCar = async(req,res)=>{
         });
     }
     
+};
+
+export const deleteCar =async (req,res)=>{
+    try{
+        const car =await Car.findByIdAndDelete(req.params.id);
+
+        if(!car){
+           return res.status(404).json({
+                success:false,
+                message:'car not found'
+            })
+        }
+        res.status(200).json({
+            success:true,
+            message:'car deleted successfully'
+
+        })
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            message:error.message
+        });
+    }
 };
