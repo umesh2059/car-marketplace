@@ -67,3 +67,36 @@ function Cars() {
 }
 
 export default Cars;
+
+import { useEffect,useState } from 'react';
+import API from "../api";
+
+const Cars =()=>{
+  const [cars , setCars]=useState([]);
+
+  useEffect(()=>{
+    const fetchCars = async()=>{
+      try{
+        const res = await API.get('/cars');
+        setCars(res.data.data);
+      }catch(error){
+        console.log(error);
+      }
+    }
+    fetchCars();
+
+  },[]);
+  return (
+        <div>
+            <h1>Cars</h1>
+            {cars.map((car) => (
+                <div key={car._id}>
+                    <h3>{car.title}</h3>
+                    <p>{car.price}</p>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export default Cars;
