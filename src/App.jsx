@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import AddCar from './pages/AddCar';
 function App(){
   return (
+    
     <Routes>
       <Route path='/' element={<Home/>}/>
       <Route path='/cars' element={<Cars />}/>
@@ -18,6 +19,7 @@ function App(){
       <Route path='/AddCar'element={<AddCar/>}/>
       
     </Routes>
+  
   );
 }
 export default App;
