@@ -1,6 +1,4 @@
 import Car from "../models/car.js";
-
-//create a new car
 export const createCar = async(req,res)=>{
     try{
         const car = await Car.create(req.body);
