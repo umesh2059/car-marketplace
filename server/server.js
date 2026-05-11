@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import Car from './models/car.js';
 import carRoutes from './routes/carRoutes.js';
+import authroutes from './routes/authroutes.js'
+
 
 dotenv.config();
 connectDB();
@@ -20,6 +22,7 @@ app.get('/',(req,res)=>{
     res.send('car marketplace api is runnning...')
 });
 app.use('/api/cars',carRoutes);
+app.use('/api/auth',authroutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,()=>{
