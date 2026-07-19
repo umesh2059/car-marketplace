@@ -1,73 +1,50 @@
-import mongoose from "mongoose";
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../config/db.js';
 
-const carSchema = new mongoose.Schema(
-    {
-        title:{
-            type:String,
-            required:true,
-            trim:true
-        },
-        brand:{
-            type:String,
-            required:true,
-            trim:true
-        },
-        model:{
-            type:String,
-            required:true,
-            trim:true
-        },
-        year:{
-            type:Number,
-            required:true,
-            trim:true
-        },
-        price:{
-            type:Number,
-            required:true,
-            trim:true
-        },
-        mileage:{
-            type:String,
-            required:true,
-            trim:true
-        },
-        fuelType:{
-            type:String,
-            enum:['petrol'],
-            trim:true
-        },
-        transmission:{
-            type:String,
-            required:true,
-            enum:['manual', 'Automatic'],
-            trim:true
-        },
-        location:{
-            type:String,
-            required:true,
-            trim:true
-        },
-        image:{
-            type:String,
-            required:true,
-            trim:true
-        },
-        description:{
-            type:String,
-            required:true,
-            trim:true
-        },
-        seller:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'User'
-        },
+const Car = sequelize.define('Car', {
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  brand: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  model: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  year: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  price: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  mileage: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  fuelType: {
+    type: DataTypes.STRING,
+  },
+  transmission: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+});
 
-    },
-    {
-        timestamps:true,
-    }
-);
-
-const car = mongoose.model("car",carSchema);
-export default car;
+export default Car;

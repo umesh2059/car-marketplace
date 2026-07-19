@@ -1,113 +1,107 @@
-import Car from "../models/car.js";
-export const createCar = async(req,res)=>{
-    try{
-        const car = await Car.create(req.body);
+import Car from "../models/Car.js";
 
-        res.status(201).json({
-            sucess:true,
-            message:'car listed succcesfully',
-            data:car
+export const createCar = async (req, res) => {
+  try {
+    const car = await Car.create(req.body);
 
-        });
-    }catch (error){
-        res.status(500).json({
-            success:false,
-            message:error.message
-
-        });
-    }
+    res.status(201).json({
+      success: true,
+      message: 'car listed successfully',
+      data: car
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 };
 
-//get all cars
-export const getCars = async(req,res)=>{
-    try{
-        const cars = await Car.find().sort({createdAt: -1})
+export const getCars = async (req, res) => {
+  try {
+    const cars = await Car.findAll({ order: [['createdAt', 'DESC']] });
 
-        res.status(200).json({
-            sucess:true,
-            count:cars.length,
-            data:cars
-        });
-    }catch(error) {
-        res.status(500).json({
-            success:false,
-            message:error.message
-        })
-    }
-}
-
-export const getCarById = async(req,res)=>{
-    try{
-        const car = await Car.findById(req.params.id);
-
-        if(!car){
-            return res.status(404).json({
-                success:false,
-                message:'car not found'
-            });
-        }
-        res.status(200).json({
-            success:true,
-            data:car
-        })
-    }catch(error){
-        res.status(500).json({
-            success:false,
-message:error.message
-        });
-    }
-
+    res.status(200).json({
+      success: true,
+      count: cars.length,
+      data: cars
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 };
 
-export const updateCar = async(req,res)=>{
-    try{
-        const car = await Car.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new:true,       //retured updated car
-                runValidators:true
-            }
-        );
-       if(!car){
-        return res.status(404).json({
-            success:false,
-            message:'car not found'
-        })
+export const getCarById = async (req, res) => {
+  try {
+    const car = await Car.findByPk(req.params.id);
 
-       }
-       res.status(200).json({
-        success:true,
-        data:car
-       })
-    }catch(error) {
-        res.status(500).json({
-            success:false,
-            message:error.message
-        });
+    if (!car) {
+      return res.status(404).json({
+        success: false,
+        message: 'car not found'
+      });
     }
-    
+    res.status(200).json({
+      success: true,
+      data: car
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 };
 
-export const deleteCar =async (req,res)=>{
-    try{
-        const car =await Car.findByIdAndDelete(req.params.id);
+export const updateCar = async (req, res) => {
+  try {
+    const car = await Car.findByPk(req.params.id);
 
-        if(!car){
-           return res.status(404).json({
-                success:false,
-                message:'car not found'
-            })
-        }
-        res.status(200).json({
-            success:true,
-            message:'car deleted successfully'
-
-        })
-    }catch(error){
-        res.status(500).json({
-            success:false,
-            message:error.message
-        });
+    if (!car) {
+      return res.status(404).json({
+        success: false,
+        message: 'car not found'
+      });
     }
+
+    await car.update(req.body);
+
+    res.status(200).json({
+      success: true,
+      data: car
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+export const deleteCar = async (req, res) => {
+  try {
+    const car = await Car.findByPk(req.params.id);
+
+    if (!car) {
+      return res.status(404).json({
+        success: false,
+        message: 'car not found'
+      });
+    }
+
+    await car.destroy();
+
+    res.status(200).json({
+      success: true,
+      message: 'car deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 };

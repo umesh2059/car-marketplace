@@ -1,152 +1,13 @@
-// import { useParams, Link } from 'react-router-dom';
-// import Navbar from '../components/Navbar';
-
-// const cars = [
-//   {
-//     id: 1,
-//     name: 'BMW X5',
-//     year: 2023,
-//     price: '$58,000',
-//     mileage: '15,000 km',
-//     fuel: 'Petrol',
-//     transmission: 'Automatic',
-//     color: 'Black',
-//     location: 'Mumbai, India',
-//     image:
-//       'https://images.unsplash.com/photo-1555215695-3004980ad54e',
-//     description:
-//       'A premium luxury SUV with exceptional comfort, performance, and advanced technology.',
-//   },
-//   {
-//     id: 2,
-//     name: 'Mercedes C-Class',
-//     year: 2022,
-//     price: '$48,500',
-//     mileage: '20,000 km',
-//     fuel: 'Diesel',
-//     transmission: 'Automatic',
-//     color: 'White',
-//     location: 'Delhi, India',
-//     image:
-//       'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8',
-//     description:
-//       'Elegant design combined with outstanding driving dynamics and premium interiors.',
-//   },
-//   {
-//     id: 3,
-//     name: 'Audi A6',
-//     year: 2024,
-//     price: '$52,000',
-//     mileage: '8,000 km',
-//     fuel: 'Petrol',
-//     transmission: 'Automatic',
-//     color: 'Grey',
-//     location: 'Bangalore, India',
-//     image:
-//       'https://images.unsplash.com/photo-1544636331-e26879cd4d9b',
-//     description:
-//       'Sophisticated sedan offering cutting-edge technology and superior ride quality.',
-//   },
-// ];
-
-// function CarDetails() {
-//   const { id } = useParams();
-//   const car = cars.find((car) => car.id === Number(id));
-
-//   if (!car) {
-//     return (
-//       <>
-//         <Navbar />
-//         <div className="min-h-screen flex items-center justify-center">
-//           <h1 className="text-4xl font-bold">Car Not Found</h1>
-//         </div>
-//       </>
-//     );
-//   }
-
-//   return (
-//     <>
-//       <Navbar />
-
-//       <div className="bg-gray-100 min-h-screen py-12">
-//         <div className="max-w-7xl mx-auto px-6">
-//           <Link
-//             to="/cars"
-//             className="inline-block mb-8 text-blue-600 hover:underline"
-//           >
-//             ← Back to Cars
-//           </Link>
-
-//           <div className="bg-white rounded-3xl shadow-xl overflow-hidden grid lg:grid-cols-2 gap-10">
-//             <img
-//               src={car.image}
-//               alt={car.name}
-//               className="w-full h-full object-cover"
-//             />
-
-//             <div className="p-8">
-//               <h1 className="text-5xl font-bold mb-4">{car.name}</h1>
-
-//               <p className="text-4xl font-bold text-blue-600 mb-6">
-//                 {car.price}
-//               </p>
-
-//               <p className="text-gray-600 text-lg mb-8">
-//                 {car.description}
-//               </p>
-
-//               <div className="grid grid-cols-2 gap-4 mb-8">
-//                 <div className="bg-gray-50 p-4 rounded-xl">
-//                   <p className="text-gray-500">Year</p>
-//                   <p className="font-semibold">{car.year}</p>
-//                 </div>
-
-//                 <div className="bg-gray-50 p-4 rounded-xl">
-//                   <p className="text-gray-500">Mileage</p>
-//                   <p className="font-semibold">{car.mileage}</p>
-//                 </div>
-
-//                 <div className="bg-gray-50 p-4 rounded-xl">
-//                   <p className="text-gray-500">Fuel Type</p>
-//                   <p className="font-semibold">{car.fuel}</p>
-//                 </div>
-
-//                 <div className="bg-gray-50 p-4 rounded-xl">
-//                   <p className="text-gray-500">Transmission</p>
-//                   <p className="font-semibold">{car.transmission}</p>
-//                 </div>
-
-//                 <div className="bg-gray-50 p-4 rounded-xl">
-//                   <p className="text-gray-500">Color</p>
-//                   <p className="font-semibold">{car.color}</p>
-//                 </div>
-
-//                 <div className="bg-gray-50 p-4 rounded-xl">
-//                   <p className="text-gray-500">Location</p>
-//                   <p className="font-semibold">{car.location}</p>
-//                 </div>
-//               </div>
-
-//               <button className="w-full bg-blue-600 text-white py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition">
-//                 Contact Seller
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default CarDetails;
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { FaCalendar, FaTachometerAlt, FaGasPump, FaCogs, FaMapMarkerAlt, FaTag, FaCar, FaPhone, FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import API from '../api';
-import Navbar from '../components/Navbar';
+import CarCard from '../components/CarCard';
 
 function CarDetails() {
   const { id } = useParams();
   const [car, setCar] = useState(null);
+  const [relatedCars, setRelatedCars] = useState([]);
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -161,18 +22,120 @@ function CarDetails() {
     fetchCar();
   }, [id]);
 
-  if (!car) return <p>Loading...</p>;
+  useEffect(() => {
+    if (car) {
+      API.get('/cars')
+        .then((res) => {
+          const others = res.data.data.filter((c) => c.id !== car.id).slice(0, 3);
+          setRelatedCars(others);
+        })
+        .catch(() => {});
+    }
+  }, [car]);
+
+  if (!car) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600 text-lg">Loading car details...</p>
+      </div>
+    </div>
+  );
+
+  const specs = [
+    { label: 'Year', value: car.year, icon: FaCalendar },
+    { label: 'Mileage', value: car.mileage, icon: FaTachometerAlt },
+    { label: 'Fuel Type', value: car.fuelType, icon: FaGasPump },
+    { label: 'Transmission', value: car.transmission, icon: FaCogs },
+    { label: 'Location', value: car.location, icon: FaMapMarkerAlt },
+    { label: 'Brand', value: car.brand, icon: FaTag },
+    { label: 'Model', value: car.model, icon: FaCar },
+  ];
 
   return (
-    <>
-      <Navbar />
-      <div>
-        <h1>{car.title}</h1>
-        <p>{car.price}</p>
-        <p>{car.location}</p>
-        <p>{car.description}</p>
+    <div className="bg-gray-100 min-h-screen py-12">
+      <div className="max-w-7xl mx-auto px-6">
+        <Link
+          to="/cars"
+          className="inline-flex items-center gap-2 mb-8 text-blue-600 hover:text-blue-800 font-semibold transition"
+        >
+          <FaArrowLeft /> Back to Cars
+        </Link>
+
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden lg:grid lg:grid-cols-5 mb-12">
+          <div className="lg:col-span-3">
+            <img
+              src={car.image}
+              alt={car.title}
+              className="w-full h-full object-cover min-h-[400px]"
+            />
+          </div>
+
+          <div className="lg:col-span-2 p-8 flex flex-col">
+            <div className="mb-2">
+              <span className="bg-blue-100 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full">
+                {car.fuelType}
+              </span>
+              <span className="bg-green-100 text-green-700 text-sm font-semibold px-3 py-1 rounded-full ml-2">
+                {car.transmission}
+              </span>
+            </div>
+
+            <h1 className="text-4xl font-bold mb-2">{car.title}</h1>
+            <p className="text-gray-500 text-lg mb-4">
+              {car.brand} {car.model} · {car.year}
+            </p>
+
+            <p className="text-4xl font-bold text-blue-600 mb-6">
+              ₹ {car.price.toLocaleString()}
+            </p>
+
+            <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+              {car.description}
+            </p>
+
+            <div className="border-t pt-6 mt-auto">
+              <h3 className="font-semibold text-lg mb-4">Seller Information</h3>
+              <div className="space-y-3">
+                <button className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition">
+                  <FaPhone /> Call Seller
+                </button>
+                <button className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                  <FaEnvelope /> Send Message
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-xl p-8 mb-12">
+          <h2 className="text-2xl font-bold mb-6">Specifications</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {specs.map((spec, index) => {
+              const Icon = spec.icon;
+              return (
+                <div key={index} className="bg-gray-50 p-5 rounded-2xl hover:shadow-md transition">
+                  <Icon className="text-blue-600 text-xl mb-2" />
+                  <p className="text-gray-500 text-sm">{spec.label}</p>
+                  <p className="font-semibold text-lg">{spec.value}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {relatedCars.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Similar Cars</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {relatedCars.map((rc) => (
+                <CarCard key={rc.id} car={rc} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 

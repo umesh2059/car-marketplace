@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom';
+import API from '../api';
 
 function AddCar() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
+    title: '',
     brand: '',
+    model: '',
     year: '',
     price: '',
     mileage: '',
-    fuel: 'Petrol',
+    fuelType: 'petrol',
     transmission: 'Automatic',
     location: '',
-    description: '',
     image: '',
+    description: '',
   });
 
   const handleChange = (e) => {
@@ -22,16 +25,20 @@ function AddCar() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    alert('Car added successfully!');
+    try {
+      await API.post('/cars', formData);
+      alert('Car added successfully!');
+      navigate('/cars');
+    } catch (error) {
+      console.error(error);
+      alert('Failed to add car');
+    }
   };
 
   return (
     <>
-      <Navbar />
-
       <div className="min-h-screen bg-gray-100 py-12">
         <div className="max-w-4xl mx-auto px-6">
           <div className="bg-white rounded-3xl shadow-xl p-8">
@@ -43,9 +50,9 @@ function AddCar() {
               <div className="grid md:grid-cols-2 gap-6">
                 <input
                   type="text"
-                  name="name"
+                  name="title"
                   placeholder="Car Name"
-                  value={formData.name}
+                  value={formData.title}
                   onChange={handleChange}
                   className="w-full px-5 py-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -56,6 +63,16 @@ function AddCar() {
                   name="brand"
                   placeholder="Brand"
                   value={formData.brand}
+                  onChange={handleChange}
+                  className="w-full px-5 py-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+
+                <input
+                  type="text"
+                  name="model"
+                  placeholder="Model"
+                  value={formData.model}
                   onChange={handleChange}
                   className="w-full px-5 py-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -102,8 +119,8 @@ function AddCar() {
                 />
 
                 <select
-                  name="fuel"
-                  value={formData.fuel}
+                  name="fuelType"
+                  value={formData.fuelType}
                   onChange={handleChange}
                   className="w-full px-5 py-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >

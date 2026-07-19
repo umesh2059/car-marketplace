@@ -1,7 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Navbar from '../components/Navbar';
-import  { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Register() {
@@ -15,45 +13,40 @@ function Register() {
 
   const navigate = useNavigate();
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError('');
-  setSuccess('');
-  setLoading(true);
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/auth/register',
+        {
+          name: fullName,
+          email,
+          password,
+        }
+      );
 
-  try {
+      console.log(res.data);
+      setSuccess('Registration successful! Redirecting...');
 
-    const res = await axios.post(
-      'http://localhost:5000/api/auth/register',
-      {
-        name: fullName,
-        email,
-        password,
-      }
-    );
+      localStorage.setItem('token', res.data.token);
 
-    console.log(res.data);
-    setSuccess('Registration successful! Redirecting...');
+      setTimeout(() => navigate('/dashboard'), 1500);
 
-    // save token
-    localStorage.setItem('token', res.data.token);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
+      setError(errorMessage);
+      console.log(error.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // redirect to dashboard
-    setTimeout(() => navigate('/dashboard'), 1500);
-
-  } catch (error) {
-    const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
-    setError(errorMessage);
-    console.log(error.response?.data || error.message);
-  } finally {
-    setLoading(false);
-  }
-};
   return (
     <>
-      <Navbar />
-
       <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6">
         <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md">
           <h1 className="text-4xl font-bold text-center mb-8">

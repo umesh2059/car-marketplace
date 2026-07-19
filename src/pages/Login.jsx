@@ -1,7 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Navbar from '../components/Navbar';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Login() {
@@ -32,10 +30,8 @@ function Login() {
       console.log(res.data);
       setSuccess('Login successful! Redirecting...');
 
-      // save token
       localStorage.setItem('token', res.data.token);
 
-      // redirect to dashboard
       setTimeout(() => navigate('/dashboard'), 1500);
 
     } catch (error) {
@@ -49,8 +45,6 @@ function Login() {
 
   return (
     <>
-      <Navbar />
-
       <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6">
         <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md">
           <h1 className="text-4xl font-bold text-center mb-8">
