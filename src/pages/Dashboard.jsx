@@ -1,16 +1,26 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import API from '../api';
 
 function Dashboard() {
   const navigate = useNavigate();
   const [myCars, setMyCars] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
+      return;
+    }
+
+    const decoded = jwtDecode(token);
+    setUser(decoded);
+
+    if (decoded.role === 'admin') {
+      navigate('/admin');
       return;
     }
 
@@ -28,34 +38,15 @@ function Dashboard() {
     fetchMyCars();
   }, [navigate]);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this car?')) return;
-    try {
-      await API.delete(`/cars/${id}`);
-      setMyCars((prev) => prev.filter((car) => car.id !== id));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   if (loading) return <p className="text-center mt-20 text-xl">Loading...</p>;
 
   return (
     <>
       <div className="min-h-screen bg-gray-100 py-12">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10 gap-4">
-            <div>
-              <h1 className="text-4xl font-bold">My Dashboard</h1>
-              <p className="text-gray-600 mt-2">Manage your car listings easily.</p>
-            </div>
-
-            <Link
-              to="/add-car"
-              className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition text-center"
-            >
-              + Add New Car
-            </Link>
+            <div className="mb-10">
+            <h1 className="text-4xl font-bold">My Dashboard</h1>
+            <p className="text-gray-600 mt-2">Browse available cars.</p>
           </div>
 
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -79,13 +70,6 @@ function Dashboard() {
                     <button className="flex-1 bg-yellow-500 text-white py-3 rounded-lg hover:bg-yellow-600 transition cursor-pointer">
                       Edit
                     </button>
-
-                    <button
-                      onClick={() => handleDelete(car.id || car._id)}
-                      className="flex-1 bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition cursor-pointer"
-                    >
-                      Delete
-                    </button>
                   </div>
                 </div>
               </div>
@@ -94,14 +78,8 @@ function Dashboard() {
 
           {myCars.length === 0 && (
             <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-              <h2 className="text-3xl font-bold mb-4">No Cars Listed Yet</h2>
-              <p className="text-gray-600 mb-6">Start by adding your first car listing.</p>
-              <Link
-                to="/add-car"
-                className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition"
-              >
-                Add Car
-              </Link>
+              <h2 className="text-3xl font-bold mb-4">No Cars Available</h2>
+              <p className="text-gray-600">Check back later for new listings.</p>
             </div>
           )}
         </div>

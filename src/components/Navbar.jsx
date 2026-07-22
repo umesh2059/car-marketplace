@@ -41,11 +41,14 @@ function Navbar() {
           <Link to="/cars" className="hover:text-blue-600 transition">Cars</Link>
           <Link to="/about" className="hover:text-blue-600 transition">About</Link>
 
-          {user ? (
+              {user ? (
             <>
               <Link to="/dashboard" className="hover:text-blue-600 transition">Dashboard</Link>
               {user.role === 'admin' && (
-                <Link to="/admin" className="hover:text-red-600 transition font-semibold">Admin</Link>
+                <>
+                  <Link to="/add-car" className="hover:text-green-600 transition font-semibold">Add Car</Link>
+                  <Link to="/admin" className="hover:text-red-600 transition font-semibold">Admin</Link>
+                </>
               )}
               <button
                 onClick={handleLogout}
